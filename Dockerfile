@@ -128,8 +128,8 @@ RUN echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tz
 EXPOSE 80 443 9000
 
 # Add .bashrc config
-COPY config/.bashrc /var/www/.bashrc
-RUN chown www-data:www-data /var/www/.bashrc
+COPY config/.bashrc /root/.bashrc
+RUN chown www-data:www-data /root/.bashrc
 
 # Set and run a custom entrypoint
 COPY core/docker-entrypoint.sh /
