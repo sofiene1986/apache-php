@@ -17,7 +17,21 @@ if [ "$OWNER" != "0" ]; then
   usermod -o -u $OWNER $USERNAME
   groupmod -o -g $GROUP www-data
 fi
-
+if [ -n "$FILES_PATH" ]; then
+  if [ -d "$FILES_PATH" ]; then
+    echo "$FILES_PATH already exist"
+  else
+    echo "Create $FILES_PATH ..."
+    mkdir $FILES_PATH
+  fi
+  OWNER=$(stat -c '%u' "$FILES_PATH")
+  GROUP=$(stat -c '%g' "$FILES_PATH")
+  if [ "$OWNER" != "0" ]; then
+    usermod -o -u $OWNER $USERNAME
+    groupmod -o -g $GROUP www-data
+    chmod 777 $FILES_PATH
+  fi
+fi
 # Apache gets grumpy about PID files pre-existing
 rm -f /var/run/apache2/apache2.pid
 
