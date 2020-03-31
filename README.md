@@ -10,8 +10,8 @@ services:
   
     build: apache-php
     environment:
-      - SERVERNAME=sofiene
-      - SERVERALIAS=sofiene
+      - SERVERNAME=localhost
+      - SERVERALIAS=localhost
       - DOCUMENTROOT=
       # DOCUMENTROOT=   (vide) document root sera /var/www/html
       # DOCUMENTROOT=web   (vide) document root sera /var/www/html/web
