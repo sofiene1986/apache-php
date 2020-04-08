@@ -8,7 +8,7 @@ services:
 
   web:
   
-    build: apache-php
+    image: sofiene1986:apache-php
     environment:
       - SERVERNAME=localhost
       - SERVERALIAS=localhost
