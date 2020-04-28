@@ -30,7 +30,20 @@ RUN rm -rf /var/www/html && \
   chown -R web:www-data /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html
 
 RUN a2enmod rewrite ssl && service apache2 restart
+# Install XDEBUG
 
+RUN apt-get install -y unzip
+RUN cd /tmp/ && wget https://github.com/xdebug/xdebug/archive/xdebug_2_2.zip && unzip xdebug_2_2.zip && cd xdebug-xdebug_2_2/ && phpize && ./configure --enable-xdebug --with-php-config=/usr/local/bin/php-config && make && make install
+RUN cd /tmp/xdebug-xdebug_2_2 && cp modules/xdebug.so /usr/local/lib/php/extensions/
+RUN echo 'zend_extension = /usr/local/lib/php/extensions/xdebug.so' >> /usr/local/etc/php/php.ini
+RUN touch /usr/local/etc/php/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_enable=1' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_autostart=0' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_connect_back=0' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_port=9000' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_log=/tmp/php5-xdebug.log' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
+  echo 'xdebug.remote_host=hostname' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
+  echo 'xdebug.idekey=PHPSTORM' >> /usr/local/etc/php/conf.d/xdebug.ini
 
 # Add .bashrc config
 COPY config/.bashrc /root/.bashrc
