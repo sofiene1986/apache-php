@@ -42,6 +42,8 @@ VOLUME /var/www/html
 # Expose 80,443 for apache + 9000 pour xdebug
 EXPOSE 80 443 9000
 
+# Apache2 config
+COPY config/apache2.conf /etc/apache2
 #added for AH00111 Error
 ENV APACHE_RUN_USER  www-data
 ENV APACHE_RUN_GROUP www-data
