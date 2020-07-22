@@ -121,6 +121,21 @@ RUN mkdir /var/www/.ssh/
 RUN mkdir /var/www/cache/
 RUN chown -R web:www-data /var/www/
 
+
+RUN rm -fr /tmp/*
+
+# Change owner tmp Folder
+RUN chown -R web:www-data /tmp/
+RUN chmod -R 777 /tmp/
+
+# Installation drush
+RUN cd /usr/local/src/ && mkdir drush && cd drush && composer require drush/drush
+RUN ln -s /usr/local/src/drush/vendor/bin/drush /usr/local/bin/drush
+
+# Installation drupal console
+RUN cd /usr/local/src/ && mkdir drupal && cd drupal && composer require drupal/console
+RUN ln -s /usr/local/src/drupal/vendor/bin/drupal /usr/local/bin/drupal
+
 # Set timezone to Europe/Paris
 RUN echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
 
