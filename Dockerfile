@@ -1,10 +1,9 @@
-FROM php:7.3.12-apache
+FROM php:7.2-apache
 
 RUN apt-get clean && apt-get update && apt-get install --fix-missing wget apt-transport-https lsb-release ca-certificates gnupg2 -y
 RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
   ruby-dev \
   rubygems \
-  imagemagick \
   graphviz \
   memcached \
   libmemcached-tools \
@@ -59,8 +58,8 @@ RUN cd /usr/src && curl -sS http://getcomposer.org/installer | php
 RUN cd /usr/src && mv composer.phar /usr/bin/composer
 
 # Install xdebug.
-RUN cd /tmp/ && wget http://xdebug.org/files/xdebug-2.9.0.tgz && tar -xvzf xdebug-2.9.0.tgz && cd xdebug-2.9.0/ && phpize && ./configure --enable-xdebug --with-php-config=/usr/local/bin/php-config && make && make install
-RUN cd /tmp/xdebug-2.9.0 && cp modules/xdebug.so /usr/local/lib/php/extensions/
+RUN cd /tmp/ && wget http://xdebug.org/files/xdebug-2.6.1.tgz && tar -xvzf xdebug-2.6.1.tgz && cd xdebug-2.6.1/ && phpize && ./configure --enable-xdebug --with-php-config=/usr/local/bin/php-config && make && make install
+RUN cd /tmp/xdebug-2.6.1 && cp modules/xdebug.so /usr/local/lib/php/extensions/
 RUN echo 'zend_extension = /usr/local/lib/php/extensions/xdebug.so' >> /usr/local/etc/php/php.ini
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.remote_enable=1' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
@@ -131,10 +130,6 @@ RUN chmod -R 777 /tmp/
 # Installation drush
 RUN cd /usr/local/src/ && mkdir drush && cd drush && composer require drush/drush
 RUN ln -s /usr/local/src/drush/vendor/bin/drush /usr/local/bin/drush
-
-# Installation drupal console
-RUN cd /usr/local/src/ && mkdir drupal && cd drupal && composer require drupal/console
-RUN ln -s /usr/local/src/drupal/vendor/bin/drupal /usr/local/bin/drupal
 
 # Set timezone to Europe/Paris
 RUN echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
