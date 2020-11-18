@@ -1,4 +1,4 @@
-FROM php:7.3.12-apache
+FROM php:7.4.12-apache
 
 RUN apt-get clean && apt-get update && apt-get install --fix-missing wget apt-transport-https lsb-release ca-certificates gnupg2 -y
 RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
@@ -32,8 +32,8 @@ RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
   libpq-dev \
   bash-completion \
   libldap2-dev \
-  libssl-dev
-
+  libssl-dev \
+  libonig-dev
 
 RUN pecl install mcrypt-1.0.3 && \
   docker-php-ext-enable mcrypt
@@ -46,9 +46,9 @@ RUN echo 'web ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 # Install APCu extension
 RUN pecl install apcu
 
-
 # Installation node.js
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+ENV NODEJS_VERSION 12.x
+RUN curl -sL https://deb.nodesource.com/setup_$NODEJS_VERSION | bash -
 RUN DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-recommends install -y nodejs
 
 # Installation of Gulp
@@ -87,7 +87,7 @@ ENV APACHE_LOCK_DIR  /var/lock/apache2
 ENV APACHE_LOG_DIR   /var/log/apache2
 
 RUN docker-php-ext-install opcache pdo_mysql && docker-php-ext-install mysqli
-RUN docker-php-ext-configure gd --with-jpeg-dir=/usr/include/
+RUN docker-php-ext-configure gd --with-jpeg
 RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/
 RUN docker-php-ext-install gd mbstring zip soap xsl calendar intl exif pgsql pdo_pgsql ftp bcmath ldap
 
@@ -131,10 +131,6 @@ RUN chmod -R 777 /tmp/
 # Installation drush
 RUN cd /usr/local/src/ && mkdir drush && cd drush && composer require drush/drush
 RUN ln -s /usr/local/src/drush/vendor/bin/drush /usr/local/bin/drush
-
-# Installation drupal console
-RUN cd /usr/local/src/ && mkdir drupal && cd drupal && composer require drupal/console
-RUN ln -s /usr/local/src/drupal/vendor/bin/drupal /usr/local/bin/drupal
 
 # Set timezone to Europe/Paris
 RUN echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
