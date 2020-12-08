@@ -145,7 +145,8 @@ EXPOSE 80 443 9000
 # Add .bashrc config
 COPY config/.bashrc /root/.bashrc
 RUN chown www-data:www-data /root/.bashrc
-
+# Install Cron
+RUN apt-get update && apt-get install -y cron
 # Set and run a custom entrypoint
 COPY core/docker-entrypoint.sh /
 RUN chmod 777 /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
