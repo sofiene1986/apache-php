@@ -68,6 +68,10 @@ ENV APACHE_LOG_DIR   /var/log/apache2
 
 RUN chmod -R 777 /var/www/html
 # Set and run a custom entrypoint
+
+# Install Cron
+RUN apt-get update && apt-get install -y cron
+
 COPY core/docker-entrypoint.sh /
 RUN chmod 777 /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
