@@ -134,6 +134,9 @@ RUN ln -s /usr/local/src/drush/vendor/bin/drush /usr/local/bin/drush
 # Set timezone to Europe/Paris
 RUN echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
 
+# Install Cron
+RUN apt-get update && apt-get install -y cron
+
 # Expose 80,443 for apache + 9000 pour xdebug
 EXPOSE 80 443 9000
 
