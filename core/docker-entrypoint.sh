@@ -32,6 +32,7 @@ if [ -n "$FILES_PATH" ]; then
     chmod 777 $FILES_PATH
   fi
 fi
+/etc/init.d/cron start
 # Apache gets grumpy about PID files pre-existing
 rm -f /var/run/apache2/apache2.pid
 
