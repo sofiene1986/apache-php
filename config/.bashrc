@@ -1,4 +1,4 @@
-alias ll='ls -al'
+alias ll='ls -la'
 alias drush='sudo -u www-data drush'
 alias svn='sudo -u www-data svn'
 alias git='sudo -u www-data git'
