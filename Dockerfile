@@ -79,10 +79,9 @@ RUN rm /etc/apache2/sites-enabled/000-default.conf
 
 # create directory for ssl certificats
 RUN mkdir /var/www/ssl-certificat
-COPY config/ssl/certificate.crt /var/www/ssl-certificat/certificate.crt
-COPY config/ssl/private.key /var/www/ssl-certificat/private.key
+COPY config/ssl/* /var/www/ssl-certificat/
 RUN chown -R web:www-data /var/www/ssl-certificat/
-RUN chmod -R 640 /var/www/ssl-certificat/
+RUN chmod -R 777 /var/www/ssl-certificat/
 
 #added for AH00111 Error
 ENV APACHE_RUN_USER  www-data
