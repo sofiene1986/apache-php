@@ -8,7 +8,7 @@ services:
 
   web:
   
-    build: apache-php
+    image: sofiene1986/apache-php:7.3.12
     environment:
       - SERVERNAME=localhost
       - SERVERALIAS=localhost
@@ -19,6 +19,7 @@ services:
       - ./html/:/var/www/html/
     ports:
       - "80:80"
+      - "443:443"
       
 Pour ajouter une tache cron, connecter au contenaire et executer les commandes suivante:
 1) crontab -e
