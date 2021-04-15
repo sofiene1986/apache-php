@@ -6,9 +6,9 @@ version: "3"
 
 services:
 
-  web:
-  
-    image: sofiene1986/apache-php
+web:
+
+    image: sofiene1986/apache-php:7.2
     environment:
       - SERVERNAME=localhost
       - SERVERALIAS=localhost
@@ -19,3 +19,9 @@ services:
       - ./html/:/var/www/html/
     ports:
       - "80:80"
+      - "443:443"
+
+Pour ajouter une tache cron, connecter au contenaire et executer les commandes suivante:
+1) crontab -e
+2) exemple de tache cron */15 * * * * wget -q -o /dev/null http://localhost/cron/M8RKg-2INkb5ftW3-nbEeaOXfOaclufPmzKJU_43h5Z8khzXveBk0-5mAWC0mIDjF2gJNhFY5w
+3) Echap + :wq!      
