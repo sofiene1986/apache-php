@@ -1,4 +1,4 @@
-alias ll='ls -al'
+alias ll='ls -la'
 function xdebug() {
   xdb_usage() { echo "usage xdebug: on|off" 1>&2; }
 
