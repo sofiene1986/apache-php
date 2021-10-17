@@ -144,6 +144,10 @@ RUN ln -s /usr/local/src/drupal/vendor/bin/drupal /usr/local/bin/drupal
 # Set timezone to Europe/Paris
 RUN echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
 
+# Install php-xhprof
+RUN cd /tmp && git clone "https://github.com/tideways/php-xhprof-extension.git" && cd php-xhprof-extension && phpize && ./configure && make && make install
+RUN cd / && rm -rf /tmp/*
+
 # Expose 80,443 for apache + 9000 pour xdebug
 EXPOSE 80 443 9000
 
