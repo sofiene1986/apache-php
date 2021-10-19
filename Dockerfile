@@ -61,7 +61,8 @@ RUN cd /usr/src && mv composer.phar /usr/bin/composer
 # Install xdebug.
 RUN cd /tmp/ && wget http://xdebug.org/files/xdebug-2.9.0.tgz && tar -xvzf xdebug-2.9.0.tgz && cd xdebug-2.9.0/ && phpize && ./configure --enable-xdebug --with-php-config=/usr/local/bin/php-config && make && make install
 RUN cd /tmp/xdebug-2.9.0 && cp modules/xdebug.so /usr/local/lib/php/extensions/
-RUN echo 'zend_extension = /usr/local/lib/php/extensions/xdebug.so' >> /usr/local/etc/php/php.ini
+RUN touch /usr/local/etc/php/php.ini &&\
+    echo 'zend_extension=/usr/local/lib/php/extensions/xdebug.so' >> /usr/local/etc/php/php.ini
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.remote_enable=1' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.remote_autostart=0' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
@@ -147,6 +148,20 @@ RUN echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tz
 # Install php-xhprof
 RUN cd /tmp && git clone "https://github.com/tideways/php-xhprof-extension.git" && cd php-xhprof-extension && phpize && ./configure && make && make install
 RUN cd / && rm -rf /tmp/*
+
+# Install php-xhprof
+RUN cd /tmp && git clone "https://github.com/tideways/php-xhprof-extension.git" && cd php-xhprof-extension && phpize && ./configure && make && make install
+RUN cd / && rm -rf /tmp/*
+RUN touch /usr/local/etc/php/php.ini &&\
+ echo "extension=tideways_xhprof.so" >>  /usr/local/etc/php/php.ini
+
+# Add xdebug function
+COPY core/xdebug.sh /usr/local/bin/xdebug
+RUN chown web:root /usr/local/bin/xdebug && chmod +x /usr/local/bin/xdebug
+
+# Add xhprof function
+COPY core/xhprof.sh /usr/local/bin/xhprof
+RUN chown web:root /usr/local/bin/xhprof && chmod +x /usr/local/bin/xhprof
 
 # Expose 80,443 for apache + 9000 pour xdebug
 EXPOSE 80 443 9000
