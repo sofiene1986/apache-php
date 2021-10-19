@@ -18,9 +18,14 @@
           ports:
             - "80:80"
             - "443:443"
+#### Quelques commandes utils:
+    xdebug on
+    xdebug off
+    xhprof on 
+    xhprof off
 
-####Pour ajouter une tache cron, connecter au contenaire et executer les commandes suivante:
-1) crontab -e
-2) Exemple de tache cron:  
-   */15 * * * * wget -q -o /dev/null http://localhost/cron/M8RKg-2INkb5ftW3-nbEeaOXfOaclufPmzKJU_43h5Z8khzXveBk0-5mAWC0mIDjF2gJNhFY5w
-3) Echap + :wq!      
+#### Pour ajouter une tache cron, connecter au contenaire et executer les commandes suivante:
+    crontab -e
+    Exemple de tache cron:  
+    */15 * * * * wget -q -o /dev/null http://localhost/cron/M8RKg-2INkb5ftW3-nbEeaOXfOaclufPmzKJU_43h5Z8khzXveBk0-5mAWC0mIDjF2gJNhFY5w
+    Echap + :wq!      
