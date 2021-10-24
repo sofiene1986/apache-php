@@ -1,4 +1,4 @@
-FROM php:7.4.12-apache
+FROM php:7.4-apache
 
 RUN apt-get clean && apt-get update && apt-get install --fix-missing wget apt-transport-https lsb-release ca-certificates gnupg2 -y
 RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
