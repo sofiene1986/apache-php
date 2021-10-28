@@ -33,7 +33,8 @@ RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
   bash-completion \
   libldap2-dev \
   libssl-dev \
-  libonig-dev
+  libonig-dev \
+  libwebp-dev
 
 RUN pecl install mcrypt-1.0.3 && \
   docker-php-ext-enable mcrypt
@@ -94,7 +95,7 @@ ENV APACHE_LOCK_DIR  /var/lock/apache2
 ENV APACHE_LOG_DIR   /var/log/apache2
 
 RUN docker-php-ext-install opcache pdo_mysql && docker-php-ext-install mysqli
-RUN docker-php-ext-configure gd --with-jpeg
+RUN docker-php-ext-configure gd --with-jpeg --with-webp
 RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/
 RUN docker-php-ext-install gd mbstring zip soap xsl calendar intl exif pgsql pdo_pgsql ftp bcmath ldap
 
