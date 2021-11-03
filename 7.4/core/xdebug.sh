@@ -5,12 +5,12 @@ case $status in
   on)
       sudo sed -i 's/^;*\(.*xdebug\.so\)/\1/' /usr/local/etc/php/php.ini
       echo "xdebug on"
-      echo "you need to restart container"
+      sudo service apache2 reload > /dev/null
       ;;
   off)
       sudo sed -i 's/^\(.*xdebug\.so\)/;\1/' /usr/local/etc/php/php.ini
       echo "xdebug off"
-      echo "you need to restart container"
+      sudo service apache2 reload > /dev/null
       ;;
     *)
       echo "usage xdebug: on|off" 1>&2;

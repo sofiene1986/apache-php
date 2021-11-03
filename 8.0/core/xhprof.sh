@@ -5,12 +5,12 @@ case $status in
   on)
       sudo sed -i 's/^;*\(.*tideways_xhprof\.so\)/\1/' /usr/local/etc/php/php.ini
       echo "xhprof on";
-      echo "you need to restart container"
+      sudo service apache2 reload > /dev/null
       ;;
   off)
       sudo sed -i 's/^\(.*tideways_xhprof\.so\)/;\1/' /usr/local/etc/php/php.ini
       echo "xhprof off";
-      echo "you need to restart container"
+      sudo service apache2 reload > /dev/null
       ;;
     *)
       echo "usage xhprof: on|off" 1>&2;
