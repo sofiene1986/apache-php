@@ -38,7 +38,9 @@ rm -f /var/run/apache2/apache2.pid
 
 case $USE_YARN in
   TRUE)
+      apt-get update
       npm install --global yarn
+      rm -rf /var/lib/apt/lists/*
       ;;
 esac
 # Start Apache in foreground

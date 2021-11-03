@@ -1,7 +1,7 @@
 FROM php:7.4.12-apache
 
 RUN apt-get clean && apt-get update && apt-get install --fix-missing wget apt-transport-https lsb-release ca-certificates gnupg2 -y
-RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
+RUN apt-get install --fix-missing -y \
   ruby-dev \
   rubygems \
   imagemagick \
@@ -114,13 +114,6 @@ RUN rm -rf /var/www/html && \
   chown -R web:www-data /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html
 RUN a2enmod rewrite expires ssl && service apache2 restart
 
-# Installation of PHP_CodeSniffer with Drupal coding standards.
-# See https://www.drupal.org/node/1419988#coder-composer
-RUN composer global require drupal/coder
-RUN ln -s ~/.composer/vendor/bin/phpcs /usr/local/bin
-RUN ln -s ~/.composer/vendor/bin/phpcbf /usr/local/bin
-RUN phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sniffer
-
 # Our apache volume
 VOLUME /var/www/html
 
@@ -147,8 +140,7 @@ RUN echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tz
 RUN cd /tmp && git clone "https://github.com/tideways/php-xhprof-extension.git" && cd php-xhprof-extension && phpize && ./configure && make && make install
 RUN cd / && rm -rf /tmp/*
 
-# Install Cron
-RUN apt-get update && apt-get install -y cron
+RUN apt-get install -y cron && rm -rf /var/lib/apt/lists/*
 
 # Expose 80,443 for apache + 9000 pour xdebug
 EXPOSE 80 443 9000
@@ -166,7 +158,6 @@ RUN chown web:root /usr/local/bin/xhprof && chmod +x /usr/local/bin/xhprof
 
 # Add .bashrc config
 COPY config/.bashrc /root/.bashrc
-RUN chown www-data:www-data /root/.bashrc
 
 # Set and run a custom entrypoint
 COPY core/docker-entrypoint.sh /
