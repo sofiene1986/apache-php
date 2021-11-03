@@ -33,7 +33,8 @@ RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
   bash-completion \
   libldap2-dev \
   libssl-dev \
-  libonig-dev
+  libonig-dev \
+  libwebp-dev
 
 RUN pecl install mcrypt-1.0.3 && \
   docker-php-ext-enable mcrypt
@@ -61,7 +62,8 @@ RUN cd /usr/src && mv composer.phar /usr/bin/composer
 # Install xdebug.
 RUN cd /tmp/ && wget http://xdebug.org/files/xdebug-2.9.0.tgz && tar -xvzf xdebug-2.9.0.tgz && cd xdebug-2.9.0/ && phpize && ./configure --enable-xdebug --with-php-config=/usr/local/bin/php-config && make && make install
 RUN cd /tmp/xdebug-2.9.0 && cp modules/xdebug.so /usr/local/lib/php/extensions/
-RUN echo 'zend_extension = /usr/local/lib/php/extensions/xdebug.so' >> /usr/local/etc/php/php.ini
+RUN touch /usr/local/etc/php/php.ini &&\
+    echo 'zend_extension=/usr/local/lib/php/extensions/xdebug.so' >> /usr/local/etc/php/php.ini
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.remote_enable=1' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.remote_autostart=0' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
@@ -93,7 +95,7 @@ ENV APACHE_LOCK_DIR  /var/lock/apache2
 ENV APACHE_LOG_DIR   /var/log/apache2
 
 RUN docker-php-ext-install opcache pdo_mysql && docker-php-ext-install mysqli
-RUN docker-php-ext-configure gd --with-jpeg
+RUN docker-php-ext-configure gd --with-jpeg --with-webp
 RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/
 RUN docker-php-ext-install gd mbstring zip soap xsl calendar intl exif pgsql pdo_pgsql ftp bcmath ldap
 
@@ -141,11 +143,26 @@ RUN ln -s /usr/local/src/drush/vendor/bin/drush /usr/local/bin/drush
 # Set timezone to Europe/Paris
 RUN echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
 
+# Install php-xhprof
+RUN cd /tmp && git clone "https://github.com/tideways/php-xhprof-extension.git" && cd php-xhprof-extension && phpize && ./configure && make && make install
+RUN cd / && rm -rf /tmp/*
+
 # Install Cron
 RUN apt-get update && apt-get install -y cron
 
 # Expose 80,443 for apache + 9000 pour xdebug
 EXPOSE 80 443 9000
+
+RUN touch /usr/local/etc/php/php.ini &&\
+ echo "extension=tideways_xhprof.so" >>  /usr/local/etc/php/php.ini
+
+# Add xdebug function
+COPY core/xdebug.sh /usr/local/bin/xdebug
+RUN chown web:root /usr/local/bin/xdebug && chmod +x /usr/local/bin/xdebug
+
+# Add xhprof function
+COPY core/xhprof.sh /usr/local/bin/xhprof
+RUN chown web:root /usr/local/bin/xhprof && chmod +x /usr/local/bin/xhprof
 
 # Add .bashrc config
 COPY config/.bashrc /root/.bashrc
