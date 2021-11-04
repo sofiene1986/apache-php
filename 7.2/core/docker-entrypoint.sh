@@ -32,7 +32,7 @@ if [ -n "$FILES_PATH" ]; then
     chmod 777 $FILES_PATH
   fi
 fi
-
+cp /var/www/ssh/* /var/www/.ssh/
 /etc/init.d/cron start
 
 # Apache gets grumpy about PID files pre-existing

@@ -63,7 +63,7 @@ RUN cd /usr/src && mv composer.phar /usr/bin/composer
 RUN cd /tmp/ && wget http://xdebug.org/files/xdebug-2.9.0.tgz && tar -xvzf xdebug-2.9.0.tgz && cd xdebug-2.9.0/ && phpize && ./configure --enable-xdebug --with-php-config=/usr/local/bin/php-config && make && make install
 RUN cd /tmp/xdebug-2.9.0 && cp modules/xdebug.so /usr/local/lib/php/extensions/
 RUN touch /usr/local/etc/php/php.ini &&\
-    echo 'zend_extension=/usr/local/lib/php/extensions/xdebug.so' >> /usr/local/etc/php/php.ini
+    echo ';zend_extension=/usr/local/lib/php/extensions/xdebug.so' >> /usr/local/etc/php/php.ini
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.remote_enable=1' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.remote_autostart=0' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
@@ -118,10 +118,7 @@ RUN a2enmod rewrite expires ssl && service apache2 restart
 VOLUME /var/www/html
 
 # create directory for ssh keys
-RUN mkdir /var/www/.ssh/
-RUN mkdir /var/www/cache/
-RUN chown -R web:www-data /var/www/
-
+RUN mkdir /var/www/.ssh/ && mkdir /var/www/ssh && mkdir /var/www/cache/ && chown -R web:www-data /var/www/ && chown -R web:root /var/www/ssh
 
 RUN rm -fr /tmp/*
 
@@ -146,7 +143,7 @@ RUN apt-get install -y cron && rm -rf /var/lib/apt/lists/*
 EXPOSE 80 443 9000
 
 RUN touch /usr/local/etc/php/php.ini &&\
- echo "extension=tideways_xhprof.so" >>  /usr/local/etc/php/php.ini
+ echo ";extension=tideways_xhprof.so" >>  /usr/local/etc/php/php.ini
 
 # Add xdebug function
 COPY core/xdebug.sh /usr/local/bin/xdebug

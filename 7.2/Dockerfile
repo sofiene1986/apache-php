@@ -115,10 +115,7 @@ RUN a2enmod rewrite expires ssl && service apache2 restart
 VOLUME /var/www/html
 
 # create directory for ssh keys
-RUN mkdir /var/www/.ssh/
-RUN mkdir /var/www/cache/
-RUN chown -R web:www-data /var/www/
-
+RUN mkdir /var/www/.ssh/ && mkdir /var/www/ssh && mkdir /var/www/cache/ && chown -R web:www-data /var/www/ && chown -R web:root /var/www/ssh
 
 RUN rm -fr /tmp/*
 
