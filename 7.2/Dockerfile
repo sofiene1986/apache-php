@@ -1,7 +1,7 @@
 FROM php:7.2-apache
 
 RUN apt-get clean && apt-get update && apt-get install --fix-missing wget apt-transport-https lsb-release ca-certificates gnupg2 -y
-RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
+RUN apt-get install --fix-missing -y \
   ruby-dev \
   rubygems \
   graphviz \
@@ -111,21 +111,11 @@ RUN rm -rf /var/www/html && \
   chown -R web:www-data /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html
 RUN a2enmod rewrite expires ssl && service apache2 restart
 
-# Installation of PHP_CodeSniffer with Drupal coding standards.
-# See https://www.drupal.org/node/1419988#coder-composer
-RUN composer global require drupal/coder
-RUN ln -s ~/.composer/vendor/bin/phpcs /usr/local/bin
-RUN ln -s ~/.composer/vendor/bin/phpcbf /usr/local/bin
-RUN phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sniffer
-
 # Our apache volume
 VOLUME /var/www/html
 
 # create directory for ssh keys
-RUN mkdir /var/www/.ssh/
-RUN mkdir /var/www/cache/
-RUN chown -R web:www-data /var/www/
-
+RUN mkdir /var/www/.ssh/ && mkdir /var/www/ssh && mkdir /var/www/cache/ && chown -R web:www-data /var/www/ && chown -R web:root /var/www/ssh
 
 RUN rm -fr /tmp/*
 
@@ -140,16 +130,13 @@ RUN ln -s /usr/local/src/drush/vendor/bin/drush /usr/local/bin/drush
 # Set timezone to Europe/Paris
 RUN echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
 
-# Install Cron
-RUN apt-get update && apt-get install -y cron
+RUN apt-get install -y cron && rm -rf /var/lib/apt/lists/*
 
 # Expose 80,443 for apache + 9000 pour xdebug
 EXPOSE 80 443 9000
 
 # Add .bashrc config
 COPY config/.bashrc /root/.bashrc
-RUN chown www-data:www-data /root/.bashrc
-
 # Set and run a custom entrypoint
 COPY core/docker-entrypoint.sh /
 RUN chmod 777 /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh

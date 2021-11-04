@@ -21,9 +21,7 @@ RUN usermod -aG sudo web
 RUN echo 'web ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # create directory for ssh keys
-RUN mkdir /var/www/.ssh/
-RUN mkdir /var/www/cache/
-RUN chown -R web:www-data /var/www/
+RUN mkdir /var/www/.ssh/ && mkdir /var/www/ssh && mkdir /var/www/cache/ && chown -R web:www-data /var/www/ && chown -R web:root /var/www/ssh
 
 RUN rm -rf /var/www/html && \
   mkdir -p /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html && \
@@ -69,8 +67,7 @@ ENV APACHE_LOG_DIR   /var/log/apache2
 RUN chmod -R 777 /var/www/html
 # Set and run a custom entrypoint
 
-# Install Cron
-RUN apt-get update && apt-get install -y cron
+RUN apt-get install -y cron && rm -rf /var/lib/apt/lists/*
 
 COPY core/docker-entrypoint.sh /
 RUN chmod 777 /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh

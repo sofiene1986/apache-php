@@ -32,13 +32,16 @@ if [ -n "$FILES_PATH" ]; then
     chmod 777 $FILES_PATH
   fi
 fi
+cp /var/www/ssh/* /var/www/.ssh/
 /etc/init.d/cron start
 # Apache gets grumpy about PID files pre-existing
 rm -f /var/run/apache2/apache2.pid
 
 case $USE_YARN in
   TRUE)
+      apt-get update
       npm install --global yarn
+      rm -rf /var/lib/apt/lists/*
       ;;
 esac
 # Start Apache in foreground

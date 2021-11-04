@@ -1,6 +1,6 @@
 FROM php:8.0.11-apache
 RUN apt-get clean && apt-get update && apt-get install --fix-missing wget apt-transport-https lsb-release ca-certificates gnupg2 -y
-RUN apt-get clean && apt-get update && apt-get install --fix-missing -y \
+RUN apt-get install --fix-missing -y \
   ruby-dev \
   rubygems \
   imagemagick \
@@ -45,7 +45,6 @@ RUN echo 'web ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 # Install APCu extension
 RUN pecl install apcu
 
-
 # Installation node.js
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-recommends install -y nodejs
@@ -61,7 +60,7 @@ RUN cd /usr/src && mv composer.phar /usr/bin/composer
 RUN cd /tmp/ && wget http://xdebug.org/files/xdebug-3.1.0.tgz && tar -xvzf xdebug-3.1.0.tgz && cd xdebug-3.1.0/ && phpize && ./configure --enable-xdebug --with-php-config=/usr/local/bin/php-config && make && make install
 RUN cd /tmp/xdebug-3.1.0 && cp modules/xdebug.so /usr/local/lib/php/extensions/
 RUN touch /usr/local/etc/php/php.ini &&\
-    echo 'zend_extension=/usr/local/lib/php/extensions/xdebug.so' >> /usr/local/etc/php/php.ini
+    echo ';zend_extension=/usr/local/lib/php/extensions/xdebug.so' >> /usr/local/etc/php/php.ini
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.mode=debug' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
   echo 'xdebug.start_with_request=yes' >> /usr/local/etc/php/conf.d/xdebug.ini &&\
@@ -113,22 +112,11 @@ RUN rm -rf /var/www/html && \
   chown -R web:www-data /var/lock/apache2 /var/run/apache2 /var/log/apache2 /var/www/html
 RUN a2enmod rewrite expires ssl && service apache2 restart
 
-# Installation of PHP_CodeSniffer with Drupal coding standards.
-# See https://www.drupal.org/node/1419988#coder-composer
-RUN composer global require drupal/coder
-RUN ln -s ~/.composer/vendor/bin/phpcs /usr/local/bin
-RUN ln -s ~/.composer/vendor/bin/phpcbf /usr/local/bin
-RUN phpcs --config-set installed_paths ~/.composer/vendor/drupal/coder/coder_sniffer
-
 # Our apache volume
 VOLUME /var/www/html
 
 # create directory for ssh keys
-RUN mkdir /var/www/.ssh/
-RUN mkdir /var/www/cache/
-RUN chown -R web:www-data /var/www/
-
-RUN rm -fr /tmp/*
+RUN mkdir /var/www/.ssh/ && mkdir /var/www/ssh && mkdir /var/www/cache/ && chown -R web:www-data /var/www/ && chown -R web:root /var/www/ssh
 
 # Change owner tmp Folder
 RUN chown -R web:www-data /tmp/
@@ -137,10 +125,6 @@ RUN chmod -R 777 /tmp/
 # Installation drush
 RUN cd /usr/local/src/ && mkdir drush && cd drush && composer require drush/drush
 RUN ln -s /usr/local/src/drush/vendor/bin/drush /usr/local/bin/drush
-
-# Installation drupal console
-RUN cd /usr/local/src/ && mkdir drupal && cd drupal && composer require drupal/console
-RUN ln -s /usr/local/src/drupal/vendor/bin/drupal /usr/local/bin/drupal
 
 # Set timezone to Europe/Paris
 RUN echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
@@ -152,7 +136,7 @@ RUN cd / && rm -rf /tmp/*
 # Expose 80,443 for apache + 9000 pour xdebug
 EXPOSE 80 443 9000
 RUN touch /usr/local/etc/php/php.ini &&\
- echo "extension=tideways_xhprof.so" >>  /usr/local/etc/php/php.ini
+ echo ";extension=tideways_xhprof.so" >>  /usr/local/etc/php/php.ini
 
 # Add xdebug function
 COPY core/xdebug.sh /usr/local/bin/xdebug
@@ -164,10 +148,8 @@ RUN chown web:root /usr/local/bin/xhprof && chmod +x /usr/local/bin/xhprof
 
 # Add .bashrc config
 COPY config/.bashrc /root/.bashrc
-RUN chown www-data:www-data /root/.bashrc
 
-# Install Cron
-RUN apt-get update && apt-get install -y cron
+RUN apt-get install -y cron && rm -rf /var/lib/apt/lists/*
 # Set and run a custom entrypoint
 COPY core/docker-entrypoint.sh /
 RUN chmod 777 /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
