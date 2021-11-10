@@ -5,7 +5,7 @@
       version: "3"
       services:
         web:
-          image: sofiene1986/apache-php:7.4
+          image: sofiene1986/apache-php:7.4.12
           environment:
             - SERVERNAME=localhost
             - SERVERALIAS=localhost
