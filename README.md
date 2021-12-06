@@ -5,7 +5,7 @@
       version: "3"
       services:
         web:
-          image: sofiene1986/apache-php:8.0.11
+    image: sofiene1986/apache-php:TAG
           environment:
             - SERVERNAME=localhost
             - SERVERALIAS=localhost
