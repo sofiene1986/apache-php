@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM php:7.4.12-apache
 
 RUN apt-get clean && apt-get update && apt-get install --fix-missing wget apt-transport-https lsb-release ca-certificates gnupg2 -y
 RUN apt-get install --fix-missing -y \
@@ -120,6 +120,8 @@ VOLUME /var/www/html
 # create directory for ssh keys
 RUN mkdir /var/www/.ssh/ && mkdir /var/www/cache/ && chown -R web:www-data /var/www/ && chown -R web:root /var/www/.ssh && chmod -R 400 /var/www/.ssh
 
+RUN rm -fr /tmp/*
+
 # Change owner tmp Folder
 RUN chown -R web:www-data /tmp/
 RUN chmod -R 777 /tmp/
@@ -133,7 +135,7 @@ RUN echo "Europe/Paris" > /etc/timezone && dpkg-reconfigure -f noninteractive tz
 
 # Install php-xhprof
 RUN cd /tmp && git clone "https://github.com/tideways/php-xhprof-extension.git" && cd php-xhprof-extension && phpize && ./configure && make && make install
-RUN rm -rf /tmp/*
+RUN cd / && rm -rf /tmp/*
 
 RUN apt-get install -y cron && rm -rf /var/lib/apt/lists/*
 
