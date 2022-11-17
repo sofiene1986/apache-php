@@ -13,6 +13,7 @@
             # DOCUMENTROOT=   (vide) document root sera /var/www/html
             # DOCUMENTROOT=web   (vide) document root sera /var/www/html/web
             - USE_YARN=TRUE (Par défaut yarn ne sera pas installé)
+            - NODEJS_VERSION=16.x (Par defaut la version 12 sera installé)
           volumes:
             - ./html/:/var/www/html/
           ports:
