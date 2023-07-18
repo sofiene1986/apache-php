@@ -300,7 +300,7 @@ COPY config/.bashrc /root/.bashrc
 # INSTALL Imagemagick
 
 RUN apt-get install -y libmagickwand-dev && pecl install imagick && docker-php-ext-enable imagick
-RUN echo "extension=imagick.so" > /usr/local/etc/php/php.ini
+RUN echo "extension=imagick.so" >> /usr/local/etc/php/php.ini
 
 RUN apt-get install -y cron && rm -rf /var/lib/apt/lists/*
 # Set and run a custom entrypoint
