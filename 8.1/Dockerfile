@@ -49,9 +49,6 @@ RUN pecl install apcu
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-recommends install -y nodejs
 
-# Installation of Gulp
-RUN npm install -g gulp
-
 # Installation of Composer
 RUN cd /usr/src && curl -sS http://getcomposer.org/installer | php
 RUN cd /usr/src && mv composer.phar /usr/bin/composer
@@ -148,6 +145,12 @@ RUN chown web:root /usr/local/bin/xhprof && chmod +x /usr/local/bin/xhprof
 
 # Add .bashrc config
 COPY config/.bashrc /root/.bashrc
+
+# INSTALL Imagemagick
+
+RUN apt-get install -y libmagickwand-dev && pecl install imagick && docker-php-ext-enable imagick
+RUN touch /usr/local/etc/php/php.ini && \
+ echo "extension=imagick.so" > /usr/local/etc/php/php.ini
 
 RUN apt-get install -y cron && rm -rf /var/lib/apt/lists/*
 # Set and run a custom entrypoint
