@@ -29,3 +29,5 @@
     Exemple de tache cron:  
     */15 * * * * wget -q -o /dev/null http://localhost/cron/M8RKg-2INkb5ftW3-nbEeaOXfOaclufPmzKJU_43h5Z8khzXveBk0-5mAWC0mIDjF2gJNhFY5w
     Echap + :wq!      
+#### Pour installer une nouvelle version de nodejs, connecter au contenaire et executer les commandes suivante:
+    install-nodejs 18 (exemple)
