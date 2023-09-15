@@ -33,6 +33,7 @@ if [ -n "$FILES_PATH" ]; then
   fi
 fi
 /etc/init.d/cron start
+/etc/init.d/memcached start
 # Apache gets grumpy about PID files pre-existing
 rm -f /var/run/apache2/apache2.pid
 
@@ -43,10 +44,5 @@ case $USE_YARN in
       rm -rf /var/lib/apt/lists/*
       ;;
 esac
-if [ -n "$NODEJS_VERSION" ]; then
-  echo "Installation de nodejs $NODEJS_VERSION"
-  curl -sL https://deb.nodesource.com/setup_$NODEJS_VERSION | bash -
-  apt-get install -y nodejs
-fi
 # Start Apache in foreground
 /usr/sbin/apache2 -DFOREGROUND
