@@ -5,7 +5,7 @@
       version: "3"
       services:
         web:
-          image: sofiene1986/apache-php:8.2.0
+          image: sofiene1986/apache-php:8.1
           environment:
             - SERVERNAME=localhost
             - SERVERALIAS=localhost
@@ -29,3 +29,7 @@
     Exemple de tache cron:  
     */15 * * * * wget -q -o /dev/null http://localhost/cron/M8RKg-2INkb5ftW3-nbEeaOXfOaclufPmzKJU_43h5Z8khzXveBk0-5mAWC0mIDjF2gJNhFY5w
     Echap + :wq!      
+
+#### Pour installer une nouvelle version de nodejs:
+    install-nodejs VERSION
+    Exemple: install-nodejs 18
